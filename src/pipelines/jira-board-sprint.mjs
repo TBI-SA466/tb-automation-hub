@@ -34,17 +34,28 @@ export async function runJiraBoardSprintPipeline({ outDir }) {
 
   const issues = issuesRes.issues || [];
   const byStatus = new Map();
+  const byStatusCategory = new Map();
   const byType = new Map();
   let totalSp = 0;
+  let doneSp = 0;
+  let doneIssues = 0;
 
   for (const i of issues) {
     const st = i.fields?.status?.name || 'Unknown';
     const ty = i.fields?.issuetype?.name || 'Unknown';
+    const statusCategory = i.fields?.status?.statusCategory?.key || 'unknown'; // todo | indeterminate | done
+
     byStatus.set(st, (byStatus.get(st) || 0) + 1);
+    byStatusCategory.set(statusCategory, (byStatusCategory.get(statusCategory) || 0) + 1);
     byType.set(ty, (byType.get(ty) || 0) + 1);
 
     const sp = Number(i.fields?.[spField]);
     if (Number.isFinite(sp)) totalSp += sp;
+
+    if (statusCategory === 'done') {
+      doneIssues += 1;
+      if (Number.isFinite(sp)) doneSp += sp;
+    }
   }
 
   const statusTable = [
@@ -53,11 +64,28 @@ export async function runJiraBoardSprintPipeline({ outDir }) {
     ...[...byStatus.entries()].sort((a, b) => b[1] - a[1]).map(([k, v]) => `| ${k} | ${v} |`),
   ].join('\n');
 
+  const statusCategoryLabel = (k) => {
+    if (k === 'todo') return 'To Do';
+    if (k === 'indeterminate') return 'In Progress';
+    if (k === 'done') return 'Done';
+    return k;
+  };
+
+  const statusCategoryTable = [
+    '| status category | count |',
+    '|---|---:|',
+    ...[...byStatusCategory.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([k, v]) => `| ${statusCategoryLabel(k)} | ${v} |`),
+  ].join('\n');
+
   const typeTable = [
     '| issue type | count |',
     '|---|---:|',
     ...[...byType.entries()].sort((a, b) => b[1] - a[1]).map(([k, v]) => `| ${k} | ${v} |`),
   ].join('\n');
+
+  const pct = (num, den) => (den ? `${((num / den) * 100).toFixed(1)}%` : '0.0%');
 
   writeReport({
     outFile: path.join(outDir, 'jira.board-sprint.md'),
@@ -79,7 +107,20 @@ export async function runJiraBoardSprintPipeline({ outDir }) {
           `- **State**: ${active.state}`,
         ].join('\n'),
       },
-      { title: 'Totals', body: `- **Issues in sprint**: ${issues.length}\n- **Total story points (sum)**: ${totalSp}` },
+      {
+        title: 'Sprint progress (scope vs done)',
+        body: [
+          `- **Scope (issues in sprint)**: ${issues.length}`,
+          `- **Done (issues)**: ${doneIssues}`,
+          `- **Completion rate (issues)**: ${pct(doneIssues, issues.length)}`,
+          `- **Scope story points (sum)**: ${totalSp}`,
+          `- **Done story points (sum)**: ${doneSp}`,
+          `- **Completion rate (story points)**: ${pct(doneSp, totalSp)}`,
+          '',
+          '_Note: Jira’s Agile API does not directly provide “committed at sprint start” vs “added mid-sprint” without additional sprint report endpoints; this report treats current sprint scope as the baseline._',
+        ].join('\n'),
+      },
+      { title: 'By status category', body: statusCategoryTable },
       { title: 'By status', body: statusTable },
       { title: 'By type', body: typeTable },
     ],
