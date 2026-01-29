@@ -41,12 +41,89 @@ Turns scattered manual workflows (pull data, compare, validate, summarize, publi
 
 ## What’s included today (starter pipelines)
 
-This repo is scaffolded with two starter pipelines so you can extend from a working baseline:
+This repo is scaffolded with two starter pipelines so you can extend from a working baseline.
+They already show the end-to-end pattern used by every automation here:
+
+- Pull data from a system API (Jira/Figma/etc.)
+- Compute a summary / diff
+- Write a markdown report into `reports/`
+- CI uploads `reports/` as an artifact
 
 - **`jira-velocity`**: pulls issues using a JQL query and writes a simple “issue type breakdown” report  
   - Output: `reports/jira.velocity.md`
 - **`design-drift`**: fetches a Figma file snapshot and writes a starter report (placeholder for deeper diffs)  
   - Output: `reports/figma.design-drift.md`
+
+## What it does in practice (examples)
+
+### Example 1: Weekly Jira “health + throughput” report (today: starter, next: full)
+
+**Use case**: Every Monday you want an auto-generated summary: counts by issue type, plus (next iteration) cycle time and reopen rate. Instead of manually pulling Jira filters and writing status updates, the repo generates a report artifact you can link in Slack/Confluence.
+
+Run locally:
+
+```bash
+node ./scripts/run-all.mjs --pipeline=jira-velocity
+```
+
+Inputs:
+- `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN`
+- `JIRA_JQL` (optional; defaults to a simple “recently updated” query)
+
+Example output (snippet from `reports/jira.velocity.md`):
+
+```text
+## Inputs
+- JQL: "project = ELECOM AND updated >= -14d order by updated DESC"
+- Max results: 50
+
+## Issue type breakdown
+| issue type | count |
+|---|---:|
+| Story | 18 |
+| Bug | 9 |
+| Task | 7 |
+```
+
+Benefits:
+- You get a **consistent weekly report** with zero manual work.
+- CI artifacts mean you always have **auditability**: “what did we report last week?”
+
+### Example 2: Figma “design snapshot” (today) → design drift detection (next)
+
+**Use case**: You want to know if a component’s states/variants in Figma changed (e.g., a new “Unavailable (on)” state added) so you can update Storybook/tests/tokens.
+
+Run locally:
+
+```bash
+node ./scripts/run-all.mjs --pipeline=design-drift
+```
+
+Inputs:
+- `FIGMA_TOKEN`
+- `FIGMA_FILE_KEY`
+
+Example output (snippet from `reports/figma.design-drift.md`):
+
+```text
+## Snapshot
+- File name: "Kairos Design System"
+- Top-level pages: 12
+```
+
+Benefits:
+- A consistent baseline for drift detection (the next step is to map component node IDs and enumerate variants).
+
+### Example 3: Scheduled automation (GitHub Actions)
+
+**Use case**: You don’t want to remember to run scripts. CI runs it on a schedule and you can trigger it manually.
+
+This repo includes a workflow at:
+- `.github/workflows/automation.yml`
+
+What you get:
+- **Scheduled runs** (weekdays) produce fresh artifacts in Actions.
+- **Manual “Run workflow”** for ad-hoc investigations.
 
 ## Typical expansions (recommended)
 
@@ -54,6 +131,18 @@ This repo is scaffolded with two starter pipelines so you can extend from a work
 - **Figma ↔ Storybook**: list expected variant/state coverage from Figma and compare to Storybook stories.
 - **Confluence dashboards**: publish the markdown reports into a living page (weekly exec summary, QA dashboard).
 - **QA regression**: run Playwright against deployed Storybook/apps and attach screenshots/traces to Jira bugs.
+
+## What you *do not* get yet (so expectations are clear)
+
+This repo is a **foundation** with working connectors + starter pipelines. These are not implemented yet:
+- Automatic Confluence publishing of markdown as a page (needs markdown→Confluence storage conversion strategy)
+- Full “velocity” math (baseline vs post-change), sprint board querying, AI labels like `AI1/AI2` (like [`jira-velocity-metrics`](https://github.com/TMW-SP380/jira-velocity-metrics))
+- Full design drift comparisons (Figma variants → Storybook story coverage → CSS/token checks)
+- QA runs (Playwright) and auto-creating Jira bugs with screenshots/traces
+
+If you want, I can implement the next concrete step so the repo feels immediately useful:
+- **Jira sprint-board velocity report (like `jira-velocity-metrics`)**, but output markdown first (and optional PPT later)
+- **Confluence publish step** that appends the markdown report to a specific page
 
 ## Setup
 
