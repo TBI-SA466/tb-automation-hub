@@ -153,6 +153,30 @@ Outputs:
 - `reports/jira.board-sprint.md`
 - `reports/figma.node-snapshot.md`
 
+### Example 5: Design-to-delivery traceability graph (Figma → Jira → PR → Confluence)
+
+This pipeline scans Jira issues and builds:
+- A **matrix** of links (Jira issue → Figma links → PR links → Confluence links)
+- A **Mermaid graph** showing relationships
+- An **orphans list**:
+  - tickets without design links
+  - tickets without PR links
+  - tickets without Confluence links
+
+Run:
+
+```bash
+node ./scripts/run-all.mjs --pipeline=traceability-graph
+```
+
+Output:
+- `reports/traceability.graph.md`
+
+Notes:
+- It detects links by parsing Jira summary/description for URLs.
+- To enrich PR titles/states, set `GITHUB_TOKEN`.
+- To enrich Confluence page titles, set `CONFLUENCE_*` creds.
+
 ## Typical expansions (recommended)
 
 - **Jira ↔ GitHub**: auto-transition Jira tickets when PRs merge; enforce ticket links in PRs.

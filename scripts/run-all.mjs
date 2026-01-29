@@ -5,6 +5,7 @@ import { runDesignDriftPipeline } from '../src/pipelines/design-drift.mjs';
 import { runDemoPipeline } from '../src/pipelines/demo.mjs';
 import { runJiraBoardSprintPipeline } from '../src/pipelines/jira-board-sprint.mjs';
 import { runFigmaNodeSnapshotPipeline } from '../src/pipelines/figma-node-snapshot.mjs';
+import { runTraceabilityGraphPipeline } from '../src/pipelines/traceability-graph.mjs';
 
 function parseArgs(argv) {
   const out = {};
@@ -26,6 +27,7 @@ async function main() {
     { name: 'demo', run: () => runDemoPipeline({ outDir }) },
     { name: 'jira-board-sprint', run: () => runJiraBoardSprintPipeline({ outDir }) },
     { name: 'figma-node-snapshot', run: () => runFigmaNodeSnapshotPipeline({ outDir }) },
+    { name: 'traceability-graph', run: () => runTraceabilityGraphPipeline({ outDir }) },
   ];
 
   const only = args.pipeline;

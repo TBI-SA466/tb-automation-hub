@@ -19,4 +19,14 @@ export async function githubCreateIssue({ owner, repo, title, body, labels = [] 
   });
 }
 
+export async function githubGetPull({ owner, repo, number }) {
+  const url = `https://api.github.com/repos/${owner}/${repo}/pulls/${number}`;
+  return httpJson(url, {
+    headers: {
+      Authorization: `Bearer ${ghToken()}`,
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+  });
+}
+
 

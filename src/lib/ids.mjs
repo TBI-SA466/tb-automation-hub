@@ -25,4 +25,15 @@ export function parseFigmaDesignUrl(url) {
   return { fileKey, nodeId };
 }
 
+export function parseFigmaUrl(url) {
+  try {
+    const u = new URL(url);
+    if (u.host !== 'www.figma.com' && u.host !== 'figma.com') return null;
+    if (!u.pathname.startsWith('/design/')) return null;
+    return parseFigmaDesignUrl(url);
+  } catch {
+    return null;
+  }
+}
+
 
