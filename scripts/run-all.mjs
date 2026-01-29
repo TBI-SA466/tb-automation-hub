@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { runJiraVelocityPipeline } from '../src/pipelines/jira-velocity.mjs';
 import { runDesignDriftPipeline } from '../src/pipelines/design-drift.mjs';
+import { runDemoPipeline } from '../src/pipelines/demo.mjs';
 
 function parseArgs(argv) {
   const out = {};
@@ -20,6 +21,7 @@ async function main() {
   const pipelines = [
     { name: 'jira-velocity', run: () => runJiraVelocityPipeline({ outDir }) },
     { name: 'design-drift', run: () => runDesignDriftPipeline({ outDir }) },
+    { name: 'demo', run: () => runDemoPipeline({ outDir }) },
   ];
 
   const only = args.pipeline;
