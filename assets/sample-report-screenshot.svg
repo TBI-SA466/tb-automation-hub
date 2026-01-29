@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640">
+  <defs>
+    <style>
+      .bg{fill:#0b1020}
+      .panel{fill:#121a33;stroke:#2a3a6a;stroke-width:2;rx:16;ry:16}
+      .title{fill:#e8eeff;font:700 28px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+      .h{fill:#dbe4ff;font:700 18px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+      .t{fill:#c6d2ff;font:500 16px ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+      .ok{fill:#52d18b;font:700 16px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+      .bad{fill:#ff6b6b;font:700 16px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+      .muted{fill:#9fb0ff;font:500 16px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+      .barBg{fill:#1a2550}
+      .bar{fill:#6f8bff}
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1200" height="640"/>
+  <text class="title" x="44" y="64">Example output report (what stakeholders will read)</text>
+  <text class="muted" x="44" y="94">This is a “screenshot-style” illustration of a markdown report produced by a pipeline.</text>
+
+  <rect class="panel" x="44" y="120" width="1112" height="476" rx="16" ry="16"/>
+
+  <text class="h" x="80" y="170">Sprint progress (scope vs done)</text>
+  <text class="t" x="80" y="200">Scope (issues): 58</text>
+  <text class="t" x="80" y="224">Done (issues): 41</text>
+  <text class="t" x="80" y="248">Completion rate (issues): 70.7%</text>
+
+  <rect class="barBg" x="80" y="270" width="520" height="18" rx="9" ry="9"/>
+  <rect class="bar" x="80" y="270" width="368" height="18" rx="9" ry="9"/>
+  <text class="t" x="612" y="284">Issues</text>
+
+  <text class="t" x="80" y="320">Scope story points: 120</text>
+  <text class="t" x="80" y="344">Done story points: 86</text>
+  <text class="t" x="80" y="368">Completion rate (SP): 71.7%</text>
+
+  <rect class="barBg" x="80" y="390" width="520" height="18" rx="9" ry="9"/>
+  <rect class="bar" x="80" y="390" width="372" height="18" rx="9" ry="9"/>
+  <text class="t" x="612" y="404">Story points</text>
+
+  <text class="h" x="80" y="460">Design drift findings</text>
+  <text class="ok" x="80" y="492">PASS</text>
+  <text class="t" x="140" y="492">States covered: 12/12</text>
+  <text class="bad" x="80" y="520">FAIL</text>
+  <text class="t" x="140" y="520">Missing story: atoms-radio--unavailable-on</text>
+  <text class="bad" x="80" y="548">FAIL</text>
+  <text class="t" x="140" y="548">Token drift: --input-border-brand mismatch vs Figma variable</text>
+</svg>
+
+

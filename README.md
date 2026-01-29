@@ -8,6 +8,8 @@ This is intentionally framework-light: plain Node (ESM) scripts using `fetch`, e
 
 Turns scattered manual workflows (pull data, compare, validate, summarize, publish) into **scheduled + on-demand pipelines** that output **auditable reports** and optionally **create/update tickets/pages**.
 
+![Automation hub overview](assets/automation-hub-overview.svg)
+
 ## Why this exists (problems it solves)
 
 - **Too much manual effort**: teams repeatedly copy/paste metrics, screenshots, acceptance criteria, and status updates.
@@ -55,6 +57,8 @@ They already show the end-to-end pattern used by every automation here:
   - Output: `reports/figma.design-drift.md`
 
 ## What it does in practice (examples)
+
+![Sample report screenshot](assets/sample-report-screenshot.svg)
 
 ### Example 1: Weekly Jira “health + throughput” report (today: starter, next: full)
 
