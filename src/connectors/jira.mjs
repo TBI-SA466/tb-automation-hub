@@ -22,4 +22,23 @@ export async function jiraSearchJql(jql, { fields = ['key', 'summary', 'status']
   return httpJson(url.toString(), { headers: authHeader() });
 }
 
+function agileBase() {
+  // Jira Software Agile API lives under /rest/agile/1.0
+  return `${base()}/rest/agile/1.0`;
+}
+
+export async function jiraGetBoardSprints(boardId, { state } = {}) {
+  const url = new URL(`${agileBase()}/board/${boardId}/sprint`);
+  if (state) url.searchParams.set('state', state); // active, closed, future
+  url.searchParams.set('maxResults', '50');
+  return httpJson(url.toString(), { headers: authHeader() });
+}
+
+export async function jiraGetSprintIssues(sprintId, { fields = [], maxResults = 100 } = {}) {
+  const url = new URL(`${agileBase()}/sprint/${sprintId}/issue`);
+  url.searchParams.set('maxResults', String(maxResults));
+  if (fields.length) url.searchParams.set('fields', fields.join(','));
+  return httpJson(url.toString(), { headers: authHeader() });
+}
+
 

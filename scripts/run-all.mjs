@@ -3,6 +3,8 @@ import path from 'node:path';
 import { runJiraVelocityPipeline } from '../src/pipelines/jira-velocity.mjs';
 import { runDesignDriftPipeline } from '../src/pipelines/design-drift.mjs';
 import { runDemoPipeline } from '../src/pipelines/demo.mjs';
+import { runJiraBoardSprintPipeline } from '../src/pipelines/jira-board-sprint.mjs';
+import { runFigmaNodeSnapshotPipeline } from '../src/pipelines/figma-node-snapshot.mjs';
 
 function parseArgs(argv) {
   const out = {};
@@ -22,6 +24,8 @@ async function main() {
     { name: 'jira-velocity', run: () => runJiraVelocityPipeline({ outDir }) },
     { name: 'design-drift', run: () => runDesignDriftPipeline({ outDir }) },
     { name: 'demo', run: () => runDemoPipeline({ outDir }) },
+    { name: 'jira-board-sprint', run: () => runJiraBoardSprintPipeline({ outDir }) },
+    { name: 'figma-node-snapshot', run: () => runFigmaNodeSnapshotPipeline({ outDir }) },
   ];
 
   const only = args.pipeline;

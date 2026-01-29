@@ -125,6 +125,30 @@ What you get:
 - **Scheduled runs** (weekdays) produce fresh artifacts in Actions.
 - **Manual “Run workflow”** for ad-hoc investigations.
 
+### Example 4: Your RFW board (284) + your Figma node (62:31062)
+
+You shared:
+- Jira board: `https://tailored-prod.atlassian.net/jira/software/c/projects/RFW/boards/284`
+- Figma node: `https://www.figma.com/design/w2YKWSK3SyzFGVr8dmcOe8/Component-Library?node-id=62-31062&m=dev`
+
+This repo now includes pipelines that are ready to run with those targets:
+
+Run the Jira active sprint summary for board 284:
+
+```bash
+node ./scripts/run-all.mjs --pipeline=jira-board-sprint
+```
+
+Run the Figma node snapshot:
+
+```bash
+node ./scripts/run-all.mjs --pipeline=figma-node-snapshot
+```
+
+Outputs:
+- `reports/jira.board-sprint.md`
+- `reports/figma.node-snapshot.md`
+
 ## Typical expansions (recommended)
 
 - **Jira ↔ GitHub**: auto-transition Jira tickets when PRs merge; enforce ticket links in PRs.
