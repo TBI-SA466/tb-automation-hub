@@ -1,0 +1,65 @@
+name: Automation Hub
+
+on:
+  workflow_dispatch:
+    inputs:
+      pipeline:
+        description: "Optional pipeline name (e.g. jira-velocity, design-drift). Leave empty to run all."
+        required: false
+        type: string
+  schedule:
+    - cron: "0 7 * * 1-5" # weekdays
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tb-automation-hub
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run pipelines
+        env:
+          # Jira
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_JQL: ${{ secrets.JIRA_JQL }}
+
+          # Figma
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
+
+          # Confluence (optional)
+          CONFLUENCE_BASE_URL: ${{ secrets.CONFLUENCE_BASE_URL }}
+          CONFLUENCE_EMAIL: ${{ secrets.CONFLUENCE_EMAIL }}
+          CONFLUENCE_API_TOKEN: ${{ secrets.CONFLUENCE_API_TOKEN }}
+          CONFLUENCE_SPACE_KEY: ${{ secrets.CONFLUENCE_SPACE_KEY }}
+          CONFLUENCE_PAGE_ID: ${{ secrets.CONFLUENCE_PAGE_ID }}
+
+          # GitHub (optional if you add GitHub API automations)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PIPE="${{ inputs.pipeline }}"
+          if [ -n "$PIPE" ]; then
+            node ./scripts/run-all.mjs --pipeline="$PIPE"
+          else
+            node ./scripts/run-all.mjs
+          fi
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: automation-hub-reports
+          path: tb-automation-hub/reports/**
+
+

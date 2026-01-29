@@ -1,0 +1,12 @@
+{
+  "name": "tb-automation-hub",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "run": "node ./scripts/run-all.mjs",
+    "run:jira-velocity": "node ./scripts/run-all.mjs --pipeline=jira-velocity"
+  }
+}
+
+
